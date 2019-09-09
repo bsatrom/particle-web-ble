@@ -18,20 +18,20 @@ async function init(vm) {
     progressItems.push('Getting private service.');
     const service = await server.getPrimaryService('5c1b9a0d-b5be-4a40-8f7a-66b36d0a5176');
 
-    progressItems.push('Getting private batState characteristic.');
+    progressItems.push('Getting private uptime characteristic.');
     var characteristic = await service.getCharacteristic('fdcf4a3f-3fed-4ed2-84e6-04bbb9ae04d4');
     await characteristic.startNotifications();
-    characteristic.addEventListener('characteristicvaluechanged', handleBatStateNotifications);
+    characteristic.addEventListener('characteristicvaluechanged', handleUptimeNotifications);
 
-    progressItems.push('Getting private powerSource characteristic.');
+    progressItems.push('Getting private signalStrength characteristic.');
     characteristic = await service.getCharacteristic('cc97c20c-5822-4800-ade5-1f661d2133ee');
     await characteristic.startNotifications();
-    characteristic.addEventListener('characteristicvaluechanged', handlePowerSourceNotifications);
+    characteristic.addEventListener('characteristicvaluechanged', handleSignalStrengthNotifications);
 
-    progressItems.push('Getting private batLevel characteristic.');
+    progressItems.push('Getting private freeMemory characteristic.');
     characteristic = await service.getCharacteristic('d2b26bf3-9792-42fc-9e8a-41f6107df04c');
     await characteristic.startNotifications();
-    characteristic.addEventListener('characteristicvaluechanged', handleBatLevelNotifications);
+    characteristic.addEventListener('characteristicvaluechanged', handleFreeMemoryNotifications);
 
     setTimeout(removeItems, 2000);
   } catch (error) {
@@ -46,69 +46,22 @@ function removeItems() {
   }
 }
 
-function handleBatLevelNotifications(event) {
+function handleUptimeNotifications(event) {
   const value = event.target.value.getUint8(0);
 
-  data.battLevel = value;
+  data.uptime = value;
 }
 
-function handlePowerSourceNotifications(event) {
+function handleSignalStrengthNotifications(event) {
   const value = event.target.value.getUint8(0);
 
-  let sourceText;
-  switch (value) {
-    case 1: // POWER_SOURCE_VIN
-      sourceText = 'VIN';
-      break;
-    case 2: // POWER_SOURCE_USB_HOST
-      sourceText = 'USB Host';
-      break;
-    case 3: // POWER_SOURCE_USB_ADAPTER
-      sourceText = 'USB Adapter';
-      break;
-    case 4: // POWER_SOURCE_USB_OTG
-      sourceText = 'USB OTG';
-      break;
-    case 5: // POWER_SOURCE_BATTERY
-      sourceText = 'Battery';
-      break;
-    case 0: // POWER_SOURCE_UNKNOWN
-    default:
-      sourceText = 'Unknown';
-      break;
-  }
-  data.powerSource = sourceText;
+  data.signalStrength = value;
 }
 
-function handleBatStateNotifications(event) {
-  const value = event.target.value.getUint8(0);
+function handleFreeMemoryNotifications(event) {
+  const value = event.target.value.getInt32(0);
 
-  let stateText;
-  switch (value) {
-    case 1: // BATTERY_STATE_NOT_CHARGING
-      stateText = 'Not Charging';
-      break;
-    case 2: // BATTERY_STATE_CHARGING
-      stateText = 'Charging';
-      break;
-    case 3: // BATTERY_STATE_CHARGED
-      stateText = 'Charged';
-      break;
-    case 4: // BATTERY_STATE_DISCHARGING
-      stateText = 'Discharging';
-      break;
-    case 5: // BATTERY_STATE_FAULT
-      stateText = 'Fault';
-      break;
-    case 6: // BATTERY_STATE_DISCONNECTED
-      stateText = 'Disconnected';
-      break;
-    case 0: // BATTERY_STATE_UNKNOWN
-    default:
-      stateText = 'Unknown';
-      break;
-  }
-  data.battState = stateText;
+  data.freeMemory = value / 1000.0;
 }
 
 export default {

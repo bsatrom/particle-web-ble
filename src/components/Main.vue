@@ -80,31 +80,28 @@
             <v-card class="mx-auto" max-width="400" tile>
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-icon>mdi-power-plug</v-icon>
-                  <v-list-item-title>Power Source:</v-list-item-title>
+                  <v-icon>mdi-progress-clock</v-icon>
+                  <v-list-item-title>Uptime</v-list-item-title>
                   <v-list-item-subtitle>
-                    <span>{{powerSource}}</span>
+                    <span>{{uptime}} seconds</span>
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-icon>mdi-battery-alert</v-icon>
-                  <v-list-item-title>Battery State:</v-list-item-title>
+                  <v-icon>mdi-signal-variant</v-icon>
+                  <v-list-item-title>Signal Strength: {{signalStrength}}%</v-list-item-title>
                   <v-list-item-subtitle>
-                    <span>{{ battState }}</span>
+                    <v-progress-linear v-model="signalStrength"></v-progress-linear>
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-icon>mdi-battery-charging-90</v-icon>
-                  <v-list-item-title>Battery Level: {{battLevel}}%</v-list-item-title>
-                  <v-list-item-subtitle>
-                    <v-progress-linear v-model="battLevel"></v-progress-linear>
-                  </v-list-item-subtitle>
+                  <v-icon>mdi-memory</v-icon>
+                  <v-list-item-title>Free Memory: {{freeMemory}} KB</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-card>
@@ -139,9 +136,9 @@ export default {
     drawer: false,
     bleError: false,
     deviceFound: false,
-    powerSource: null,
-    battLevel: 0,
-    battState: null,
+    freeMemory: 0,
+    uptime: 0,
+    signalStrength: 0,
     progressItems: [],
     errorMsg: false
   })
